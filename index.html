@@ -172,7 +172,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth..js";
         import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc, setDoc, getDoc, updateDoc, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
         // --- Configuration ---
@@ -243,15 +243,15 @@
                 // =======================================================================
                 // TODO: PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
                 // =======================================================================
-                const firebaseConfig = {
-                  apiKey: "AIzaSyBm_g06hcHQlnQA-Rw3MZgpIeX8hV4oJbo",
-                  authDomain: "aic-logbook-shared.firebaseapp.com",
-                  projectId: "aic-logbook-shared",
-                  storageBucket: "aic-logbook-shared.firebasestorage.app",
-                  messagingSenderId: "547177573058",
-                  appId: "1:547177573058:web:0d8eecf81dbdf9c005695b",
-                  measurementId: "G-12MTF7K2VR"
-                };
+                 const firebaseConfig = {
+                     apiKey: "AIzaSyBm_g06hcHQlnQA-Rw3MZgpIeX8hV4oJbo",
+                     authDomain: "aic-logbook-shared.firebaseapp.com",
+                     projectId: "aic-logbook-shared",
+                     storageBucket: "aic-logbook-shared.firebasestorage.app",
+                     messagingSenderId: "547177573058",
+                     appId: "1:547177573058:web:0d8eecf81dbdf9c005695b",
+                     measurementId: "G-12MTF7K2VR"
+                 };
                 // =======================================================================
 
                 if (firebaseConfig.projectId === "YOUR_PROJECT_ID" || !firebaseConfig.projectId) {
