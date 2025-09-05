@@ -186,7 +186,7 @@
         ];
 
         // =======================================================================
-        // TODO: PASTE YOUR ADMIN UID HERE
+        // ADMIN UID
         // =======================================================================
         const ADMIN_UID = "51jtlIEyF0VaE5fxiuMZXYMlCXu2";
         // =======================================================================
@@ -238,7 +238,7 @@
         async function initialize() {
             try {
                 // =======================================================================
-                // PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
+                // FIREBASE CONFIGURATION OBJECT
                 // =======================================================================
                  const firebaseConfig = {
                      apiKey: "AIzaSyBm_g06hcHQlnQA-Rw3MZgpIeX8hV4oJbo",
@@ -370,7 +370,8 @@
             unsubscribeUsers = onSnapshot(q, (snapshot) => {
                 const pendingUsers = [];
                 snapshot.forEach(doc => {
-                    if (!doc.data().approved) {
+                    // Do not show the admin in the pending list
+                    if (!doc.data().approved && doc.id !== ADMIN_UID) {
                         pendingUsers.push({ id: doc.id, ...doc.data() });
                     }
                 });
@@ -460,7 +461,7 @@
 
             filteredRecords.forEach(record => {
                 const row = document.createElement('tr');
-                row.classList.add('hover:bg-gray-700/ ৫০', 'transition-colors');
+                row.classList.add('hover:bg-gray-700/50', 'transition-colors');
                 row.innerHTML = `
                     <td class="table-cell font-medium">${record.memberName}</td>
                     <td class="table-cell">${record.date}</td>
