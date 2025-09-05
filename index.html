@@ -188,9 +188,6 @@
         // =======================================================================
         // TODO: PASTE YOUR ADMIN UID HERE
         // =======================================================================
-        // 1. Sign up for the app yourself first.
-        // 2. Go to Firebase Console > Authentication > Users tab.
-        // 3. Copy the "User UID" for your account and paste it below.
         const ADMIN_UID = "51jtlIEyF0VaE5fxiuMZXYMlCXu2";
         // =======================================================================
 
@@ -241,7 +238,7 @@
         async function initialize() {
             try {
                 // =======================================================================
-                // TODO: PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
+                // PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
                 // =======================================================================
                  const firebaseConfig = {
                      apiKey: "AIzaSyBm_g06hcHQlnQA-Rw3MZgpIeX8hV4oJbo",
@@ -273,25 +270,30 @@
         
         // --- Main Auth Handler ---
         const handleAuthState = async (user) => {
-            // Stop any active listeners
             if (unsubscribeLogs) unsubscribeLogs();
             if (unsubscribeUsers) unsubscribeUsers();
             
             if (user) {
-                // User is signed in
                 const userDocRef = doc(db, "users", user.uid);
                 const userDoc = await getDoc(userDocRef);
 
-                if (userDoc.exists() && userDoc.data().approved) {
-                    // User is approved
+                // Admin check: The admin bypasses the approval process.
+                if (user.uid === ADMIN_UID) {
                     showApp();
                     setupRealtimeLogListener();
-                    if (user.uid === ADMIN_UID) {
-                        showAdminPanel();
-                        setupAdminListener();
+                    showAdminPanel();
+                    setupAdminListener();
+                    
+                    // Self-healing: ensure admin user doc is correctly set up
+                    if (!userDoc.exists() || !userDoc.data().approved || !userDoc.data().isAdmin) {
+                        await setDoc(userDocRef, { email: user.email, approved: true, isAdmin: true }, { merge: true });
                     }
+                } else if (userDoc.exists() && userDoc.data().approved) {
+                    // Regular, approved user
+                    showApp();
+                    setupRealtimeLogListener();
                 } else {
-                    // User is not approved or doc doesn't exist yet
+                    // User is pending approval
                     showApprovalScreen();
                 }
             } else {
@@ -327,16 +329,16 @@
             e.preventDefault();
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
+            authError.textContent = '';
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
-                // Create a document in the 'users' collection
+                // Create a document in the 'users' collection for approval
                 await setDoc(doc(db, "users", user.uid), {
                     email: user.email,
-                    approved: false
+                    approved: false,
+                    isAdmin: false
                 });
-                authError.textContent = '';
-                // onAuthStateChanged will handle showing the approval screen
             } catch (error) {
                 authError.textContent = error.message;
             }
@@ -346,10 +348,9 @@
             e.preventDefault();
             const email = document.getElementById('signin-email').value;
             const password = document.getElementById('signin-password').value;
+            authError.textContent = '';
             try {
                 await signInWithEmailAndPassword(auth, email, password);
-                authError.textContent = '';
-                // onAuthStateChanged will handle showing the app
             } catch (error) {
                 authError.textContent = error.message;
             }
@@ -365,7 +366,7 @@
         // --- Admin Panel Logic ---
         const setupAdminListener = () => {
             const usersRef = collection(db, "users");
-            const q = query(usersRef); // Could filter for approved: false here
+            const q = query(usersRef);
             unsubscribeUsers = onSnapshot(q, (snapshot) => {
                 const pendingUsers = [];
                 snapshot.forEach(doc => {
@@ -459,7 +460,7 @@
 
             filteredRecords.forEach(record => {
                 const row = document.createElement('tr');
-                row.classList.add('hover:bg-gray-700/50', 'transition-colors');
+                row.classList.add('hover:bg-gray-700/ ৫০', 'transition-colors');
                 row.innerHTML = `
                     <td class="table-cell font-medium">${record.memberName}</td>
                     <td class="table-cell">${record.date}</td>
