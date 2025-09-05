@@ -262,12 +262,17 @@
                 setTimeout(() => loadingOverlay.style.display = 'none', 300);
             }, (error) => {
                 console.error("Error listening to logs: ", error);
-                loadingOverlay.querySelector('p').textContent = "Error connecting. Please refresh.";
+                 if (error.code === 'permission-denied') {
+                    loadingOverlay.querySelector('p').innerHTML = "Connection Error: Permission Denied.<br/>Please check your Firestore Security Rules.";
+                } else {
+                    loadingOverlay.querySelector('p').textContent = "Error connecting to the database.";
+                }
             });
         };
 
         // --- Initialization ---
         async function initialize() {
+            const loadingText = loadingOverlay.querySelector('p');
             // Populate dropdowns
             const allOption = document.createElement('option');
             allOption.value = 'all';
@@ -293,37 +298,43 @@
                 // =======================================================================
                 // TODO: PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
                 // =======================================================================
-                // You can get this from your Firebase project settings.
-                // Go to Project Settings > General > Your apps > Web app > SDK setup and configuration
                 const firebaseConfig = {
-                  apiKey: "AIzaSyBm_g06hcHQlnQA-Rw3MZgpIeX8hV4oJbo",
-                  authDomain: "aic-logbook-shared.firebaseapp.com",
-                  projectId: "aic-logbook-shared",
-                  storageBucket: "aic-logbook-shared.firebasestorage.app",
-                  messagingSenderId: "547177573058",
-                  appId: "1:547177573058:web:0d8eecf81dbdf9c005695b",
-                  measurementId: "G-12MTF7K2VR"
+                apiKey: "AIzaSyBm_g06hcHQlnQA-Rw3MZgpIeX8hV4oJbo",
+                authDomain: "aic-logbook-shared.firebaseapp.com",
+                projectId: "aic-logbook-shared",
+                storageBucket: "aic-logbook-shared.firebasestorage.app",
+                messagingSenderId: "547177573058",
+                appId: "1:547177573058:web:0d8eecf81dbdf9c005695b",
+                measurementId: "G-12MTF7K2VR"
                 };
                 // =======================================================================
 
-                // Check if the config has been updated from the placeholder
                 if (firebaseConfig.projectId === "YOUR_PROJECT_ID" || !firebaseConfig.projectId) {
-                     loadingOverlay.querySelector('p').innerHTML = "Configuration Missing. <br/> Please add your Firebase project config to the HTML file.";
+                     loadingText.innerHTML = "Configuration Missing. <br/> Please add your Firebase project config to the HTML file.";
                      return;
                 }
-
+                
+                loadingText.textContent = "Step 1/4: Initializing Firebase app...";
                 const app = initializeApp(firebaseConfig);
+
+                loadingText.textContent = "Step 2/4: Connecting to services...";
                 db = getFirestore(app);
                 const auth = getAuth(app);
                 setLogLevel('error');
 
+                loadingText.textContent = "Step 3/4: Authenticating user...";
                 await signInAnonymously(auth);
                 
+                loadingText.textContent = "Step 4/4: Setting up data listener...";
                 setupRealtimeListener();
 
             } catch (error) {
                 console.error("Firebase Initialization Error:", error);
-                loadingOverlay.querySelector('p').textContent = "Could not initialize shared logbook.";
+                let userMessage = `Could not initialize shared logbook. Error: ${error.code || 'UNKNOWN'}`;
+                if (error.code === 'auth/operation-not-allowed') {
+                     userMessage = "Initialization Error: Anonymous sign-in is not enabled. Please enable it in the Firebase Authentication settings.";
+                }
+                loadingText.innerHTML = userMessage;
             }
         }
 
