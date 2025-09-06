@@ -153,6 +153,7 @@
                 <table class="w-full text-left whitespace-nowrap">
                     <thead>
                         <tr>
+                            <th class="table-header table-cell text-center">No.</th> 
                             <th class="table-header table-cell">Member</th>
                             <th class="table-header table-cell">Date</th>
                             <th class="table-header table-cell">Time (UTC)</th>
@@ -448,35 +449,39 @@
         };
 
         const renderRecords = () => {
-            const selectedMemberId = viewSelect.value;
-            const filteredRecords = selectedMemberId === 'all'
-                ? allRecords
-                : allRecords.filter(rec => rec.memberId === selectedMemberId);
+            const selectedMemberId = viewSelect.value;
+            const filteredRecords = selectedMemberId === 'all'
+                ? allRecords
+                : allRecords.filter(rec => rec.memberId === selectedMemberId);
 
-            logTableBody.innerHTML = '';
-            noRecordsMessage.classList.toggle('hidden', filteredRecords.length > 0);
-            logTableBody.classList.toggle('hidden', filteredRecords.length === 0);
-            
-            filteredRecords.sort((a, b) => new Date(`${b.date}T${b.time}`) - new Date(`${a.date}T${a.time}`));
+            logTableBody.innerHTML = '';
+            noRecordsMessage.classList.toggle('hidden', filteredRecords.length > 0);
+            logTableBody.classList.toggle('hidden', filteredRecords.length === 0);
+            
+            // CHANGE 1: Sort from oldest to newest (ascending order)
+            filteredRecords.sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`));
 
-            filteredRecords.forEach(record => {
-                const row = document.createElement('tr');
-                row.classList.add('hover:bg-gray-700/50', 'transition-colors');
-                row.innerHTML = `
-                    <td class="table-cell font-medium">${record.memberName}</td>
-                    <td class="table-cell">${record.date}</td>
-                    <td class="table-cell">${record.time}</td>
-                    <td class="table-cell">${record.airspace}</td>
-                    <td class="table-cell">${record.squadron}</td>
-                    <td class="table-cell text-center">${record.passes}</td>
-                    <td class="table-cell">${record.scale}</td>
-                    <td class="table-cell text-center">
-                        <button onclick="window.deleteRecord('${record.id}')" class="text-red-400 hover:text-red-600 font-semibold transition-colors">Delete</button>
-                    </td>
-                `;
-                logTableBody.appendChild(row);
-            });
-        };
+            // CHANGE 2: Add the "index" parameter to the loop
+            filteredRecords.forEach((record, index) => {
+                const row = document.createElement('tr');
+                // I also fixed the CSS bug here: changed / ৫০ to /50
+                row.classList.add('hover:bg-gray-700/50', 'transition-colors');
+                row.innerHTML = `
+                    <td class="table-cell text-center">${index + 1}</td>
+                    <td class="table-cell font-medium">${record.memberName}</td>
+                    <td class="table-cell">${record.date}</td>
+                    <td class="table-cell">${record.time}</td>
+                    <td class="table-cell">${record.airspace}</td>
+                    <td class="table-cell">${record.squadron}</td>
+                    <td class="table-cell text-center">${record.passes}</td>
+                    <td class="table-cell">${record.scale}</td>
+                    <td class="table-cell text-center">
+                        <button onclick="window.deleteRecord('${record.id}')" class="text-red-400 hover:text-red-600 font-semibold transition-colors">Delete</button>
+                    </td>
+                `;
+                logTableBody.appendChild(row);
+            });
+        };
         
         window.deleteRecord = async (docId) => {
             if (confirm('Are you sure you want to delete this record?')) {
