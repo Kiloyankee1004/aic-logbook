@@ -386,33 +386,51 @@
         };
 
         const renderApprovalList = (users) => {
-            approvalList.innerHTML = '';
-            if (users.length === 0) {
-                approvalList.innerHTML = '<p class="text-gray-400">No new users are waiting for approval.</p>';
-                return;
-            }
-            users.forEach(user => {
-                const div = document.createElement('div');
-                div.className = 'flex justify-between items-center bg-gray-700 p-3 rounded';
-                div.innerHTML = `
-                    <span class="text-gray-300">${user.email}</span>
-                    <button data-uid="${user.id}" class="approve-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded text-sm">Approve</button>
-                `;
-                approvalList.appendChild(div);
-            });
-        };
+            approvalList.innerHTML = '';
+            if (users.length === 0) {
+                approvalList.innerHTML = '<p class="text-gray-400">No new users are waiting for approval.</p>';
+                return;
+            }
+            users.forEach(user => {
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center bg-gray-700 p-3 rounded';
+                div.innerHTML = `
+                    <span class="text-gray-300">${user.email}</span>
+                    <div>
+                        <button data-uid="${user.id}" class="approve-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded text-sm mr-2">Approve</button>
+                        <button data-uid="${user.id}" data-email="${user.email}" class="reject-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-sm">Reject</button>
+                    </div>
+                `;
+                approvalList.appendChild(div);
+            });
+        };
 
         approvalList.addEventListener('click', async (e) => {
-            if (e.target.classList.contains('approve-btn')) {
-                const uidToApprove = e.target.dataset.uid;
-                const userDocRef = doc(db, "users", uidToApprove);
-                try {
-                    await updateDoc(userDocRef, { approved: true });
-                } catch (error) {
-                    console.error("Error approving user:", error);
-                }
-            }
-        });
+            // Handle Approve Button Click
+            if (e.target.classList.contains('approve-btn')) {
+                const uidToApprove = e.target.dataset.uid;
+                const userDocRef = doc(db, "users", uidToApprove);
+                try {
+                    await updateDoc(userDocRef, { approved: true });
+                } catch (error) {
+                    console.error("Error approving user:", error);
+                }
+            } 
+            // Handle Reject Button Click
+            else if (e.target.classList.contains('reject-btn')) {
+                const uidToReject = e.target.dataset.uid;
+                const emailToReject = e.target.dataset.email;
+
+                if (confirm(`Are you sure you want to reject the request from ${emailToReject}? This will delete their request.`)) {
+                     const userDocRef = doc(db, "users", uidToReject);
+                     try {
+                         await deleteDoc(userDocRef);
+                     } catch (error) {
+                         console.error("Error rejecting user:", error);
+                     }
+                }
+            }
+        });
 
         // --- Logbook App Logic ---
         const initializeLogbookUI = () => {
