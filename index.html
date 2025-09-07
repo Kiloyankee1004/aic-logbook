@@ -26,7 +26,8 @@
             max-width: 420px;
             width: 100%;
         }
-        .form-tab { @apply px-4 py-2 font-medium text-lg cursor-pointer text-gray-400 border-b-2 border-transparent; }
+        /* After */
+        .form-tab { @apply px-4 py-2 font-medium text-lg cursor-pointer text-gray-400 border-b-2 border-transparent hover:text-white transition-colors; }
         .form-tab.active { @apply text-white border-blue-500; }
         .hidden { display: none; }
     </style>
@@ -41,7 +42,7 @@
             <p class="text-gray-400 mt-2">Team Sign-In</p>
         </header>
         <div class="card auth-card">
-            <div class="flex border-b border-gray-700 mb-6">
+            <div class="flex border-b border-gray-700 mb-6 gap-x-4">
                 <div id="signin-tab" class="form-tab active">Sign In</div>
                 <div id="signup-tab" class="form-tab">Sign Up</div>
             </div>
