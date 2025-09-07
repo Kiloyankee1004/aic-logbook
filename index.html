@@ -140,8 +140,8 @@
                     <input type="number" id="passes" min="1" placeholder="e.g., 2" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
                 </div>
                 <div>
-                    <label for="Mission Type" class="block text-sm font-medium text-gray-300 mb-1">Mission Type</label>
-                    <input type="text" id="Mission Type" placeholder="e.g., 4vs4DCA" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
+                    <label for="Scale" class="block text-sm font-medium text-gray-300 mb-1">Scale</label>
+                    <input type="text" id="Scale" placeholder="e.g., 4vs4DCA" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
                 </div>
                 <div>
                     <label for="recordType" class="block text-sm font-medium text-gray-300 mb-1">Record Type</label>
@@ -179,7 +179,7 @@
                             <th class="table-header table-cell">Airspace</th>
                             <th class="table-header table-cell">Squadron</th>
                             <th class="table-header table-cell text-center">Passes</th>
-                            <th class="table-header table-cell">Mission Type</th>
+                            <th class="table-header table-cell">Scale</th>
                             <th class="table-header table-cell text-center">Actions</th>
                             <th class="table-header table-cell text-center">Control Agency</th>
                         </tr>
@@ -521,7 +521,7 @@
                     <td class="table-cell">${record.airspace}</td>
                     <td class="table-cell">${record.squadron}</td>
                     <td class="table-cell text-center">${record.passes}</td>
-                    <td class="table-cell">${record.Mission Type}</td>
+                    <td class="table-cell">${record.Scale}</td>
                     <td class="table-cell text-center">
                         <button onclick="window.openEditModal('${record.id}')" class="text-blue-400 hover:text-blue-600 font-semibold transition-colors mr-3">Modify</button>
                         <button onclick="window.deleteRecord('${record.id}')" class="text-red-400 hover:text-red-600 font-semibold transition-colors">Delete</button>
@@ -555,7 +555,7 @@
             document.getElementById('edit-squadron').value = recordToEdit.squadron;
             document.getElementById('edit-agency').value = recordToEdit.agency || ''; // Handle cases where agency might be missing on old records
             document.getElementById('edit-passes').value = recordToEdit.passes;
-            document.getElementById('edit-Mission Type').value = recordToEdit.Mission Type;
+            document.getElementById('edit-Scale').value = recordToEdit.Scale;
 
             // Show the modal
             document.getElementById('edit-modal').classList.remove('hidden');
@@ -581,7 +581,7 @@
                 squadron: document.getElementById('edit-squadron').value,
                 agency: document.getElementById('edit-agency').value,
                 passes: document.getElementById('edit-passes').value,
-                Mission Type: document.getElementById('edit-Mission Type').value,
+                Scale: document.getElementById('edit-Scale').value,
             };
 
             const docRef = doc(db, "aic-logs", docId);
@@ -603,7 +603,7 @@ logForm.addEventListener('submit', async (e) => {
         squadron: document.getElementById('squadron').value,
         agency: document.getElementById('agency').value,
         passes: document.getElementById('passes').value,
-        Mission Type: document.getElementById('Mission Type').value,
+        Scale: document.getElementById('Scale').value,
         recordType: document.getElementById('recordType').value,
         memberId: selectedMember.id,
         memberName: selectedMember.name
@@ -655,8 +655,8 @@ document.addEventListener('DOMContentLoaded', initialize);
                     <input type="number" id="edit-passes" min="1" placeholder="e.g., 2" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
                 </div>
                 <div class="md:col-span-2">
-                    <label for="edit-Mission Type" class="block text-sm font-medium text-gray-300 mb-1">Mission Type</label>
-                    <input type="text" id="edit-Mission Type" placeholder="e.g., 4vs4DCA" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
+                    <label for="edit-Scale" class="block text-sm font-medium text-gray-300 mb-1">Scale</label>
+                    <input type="text" id="edit-Scale" placeholder="e.g., 4vs4DCA" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
                 </div>
 
                 <div class="lg:col-span-3 md:col-span-2 grid grid-cols-2 gap-4 mt-4">
