@@ -102,51 +102,10 @@
             </div>
         </div>
 
-        <!-- View Filter -->
-        <form id="logForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div>
-                <label for="memberSelect" class="block text-sm font-medium text-gray-300 mb-1">Logging For</label>
-                <select id="memberSelect" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2"></select>
-            </div>
-            <div>
-                <label for="date" class="block text-sm font-medium text-gray-300 mb-1">Date</label>
-                <input type="date" id="date" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
-            </div>
-            <div>
-                <label for="time" class="block text-sm font-medium text-gray-300 mb-1">Time (UTC)</label>
-                <input type="time" id="time" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
-            </div>
-            <div>
-                <label for="airspace" class="block text-sm font-medium text-gray-300 mb-1">Name of Airspace</label>
-                <input type="text" id="airspace" placeholder="e.g., MOA10" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
-            </div>
-            <div>
-                <label for="squadron" class="block text-sm font-medium text-gray-300 mb-1">Squadron</label>
-                <input type="text" id="squadron" placeholder="e.g., VFA-101" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
-            </div>
-            <div>
-                <label for="agency" class="block text-sm font-medium text-gray-300 mb-1">Control Agency</label>
-                <input type="text" id="agency" placeholder="e.g., 1MCRC" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
-            </div>
-            <div>
-                <label for="passes" class="block text-sm font-medium text-gray-300 mb-1">Number of Passes</label>
-                <input type="number" id="passes" min="1" placeholder="e.g., 2" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
-            </div>
-            <div>
-                <label for="scale" class="block text-sm font-medium text-gray-300 mb-1">Scale</label>
-                <input type="text" id="scale" placeholder="e.g., 4vs4DCA" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
-            </div>
-            <div>
-                <label for="recordType" class="block text-sm font-medium text-gray-300 mb-1">Record Type</label>
-                <select id="recordType" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
-                    <option value="actual">Actual</option>
-                    <option value="sim">Sim</option>
-                </select>
-            </div>
-            <div class="md:col-span-2 lg:col-span-3 text-right mt-4">
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition">Add Record</button>
-            </div>
-        </form>
+        <div class="card mb-8">
+            <label for="viewSelect" class="block text-lg font-medium text-gray-300 mb-2">View Logs For</label>
+            <select id="viewSelect" class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3"></select>
+        </div>
 
         <!-- Log Entry Form -->
         <div class="card mb-8">
@@ -173,16 +132,23 @@
                     <input type="text" id="squadron" placeholder="e.g., VFA-101" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
                 </div>
                 <div>
+                    <label for="agency" class="block text-sm font-medium text-gray-300 mb-1">Control Agency</label>
+                    <input type="text" id="agency" placeholder="e.g., 1MCRC" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
+                </div>
+                <div>
                     <label for="passes" class="block text-sm font-medium text-gray-300 mb-1">Number of Passes</label>
                     <input type="number" id="passes" min="1" placeholder="e.g., 2" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
                 </div>
-                <div class="md:col-span-1">
+                <div>
                     <label for="scale" class="block text-sm font-medium text-gray-300 mb-1">Scale</label>
                     <input type="text" id="scale" placeholder="e.g., 4vs4DCA" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
                 </div>
                 <div>
-                    <label for="agency" class="block text-sm font-medium text-gray-300 mb-1">Control Agency</label>
-                    <input type="text" id="agency" placeholder="e.g., 1MCRC" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
+                    <label for="recordType" class="block text-sm font-medium text-gray-300 mb-1">Record Type</label>
+                    <select id="recordType" required class="w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm p-2">
+                        <option value="actual">Actual</option>
+                        <option value="sim">Sim</option>
+                    </select>
                 </div>
                 <div class="md:col-span-2 lg:col-span-3 text-right mt-4">
                     <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition">Add Record</button>
@@ -626,39 +592,30 @@
         
         viewSelect.addEventListener('change', renderRecords);
         document.getElementById('recordFilter').addEventListener('change', renderRecords);
-
-        // START: Replace this function
-        logForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const selectedMember = memberList.find(m => m.id === memberSelect.value);
-            const newRecord = {
-                date: document.getElementById('date').value,
-                time: document.getElementById('time').value,
-                airspace: document.getElementById('airspace').value,
-                squadron: document.getElementById('squadron').value,
-                agency: document.getElementById('agency').value, // Fix: Added agency
-                passes: document.getElementById('passes').value,
-                scale: document.getElementById('scale').value,
-                recordType: document.getElementById('recordType').value, // NEW: Added record type
-                memberId: selectedMember.id,
-                memberName: selectedMember.name
-            };
-            await addDoc(logsCollectionRef, newRecord);
-            logForm.reset();
-            setDateTime();
-            memberSelect.value = selectedMember.id;
-            // Set record type dropdown back to actual
-            document.getElementById('recordType').value = 'actual';
-        });
-        // END: Replace this function
-            await addDoc(logsCollectionRef, newRecord);
-            logForm.reset();
-            setDateTime();
-            memberSelect.value = selectedMember.id;
-        });
-
-        // --- Start the App ---
-        document.addEventListener('DOMContentLoaded', initialize);
+// ADD THIS FUNCTION BACK IN
+logForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const selectedMember = memberList.find(m => m.id === memberSelect.value);
+    const newRecord = {
+        date: document.getElementById('date').value,
+        time: document.getElementById('time').value,
+        airspace: document.getElementById('airspace').value,
+        squadron: document.getElementById('squadron').value,
+        agency: document.getElementById('agency').value,
+        passes: document.getElementById('passes').value,
+        scale: document.getElementById('scale').value,
+        recordType: document.getElementById('recordType').value,
+        memberId: selectedMember.id,
+        memberName: selectedMember.name
+    };
+    await addDoc(logsCollectionRef, newRecord);
+    logForm.reset();
+    setDateTime();
+    memberSelect.value = selectedMember.id;
+    document.getElementById('recordType').value = 'actual';
+});
+// --- Start the App ---
+document.addEventListener('DOMContentLoaded', initialize);
     </script>
     <div id="edit-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center z-50">
         <div class="card w-full max-w-4xl max-h-[90vh] overflow-y-auto">
